@@ -19,4 +19,10 @@
     <changeSet author="6londo9 (generated)" id="1677494438137-2">
         <addUniqueConstraint columnNames="email" constraintName="UC_USERSEMAIL_COL" tableName="users"/>
     </changeSet>
+    <changeSet author="6londo9 (generated)" id="1677495515909-1">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="first_name" tableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="6londo9 (generated)" id="1677495515909-2">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="last_name" tableName="users" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

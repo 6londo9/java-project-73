@@ -11,7 +11,6 @@ plugins {
 
 group = 'hexlet.code'
 version = '1.0-SNAPSHOT'
-sourceCompatibility = '17'
 
 application {
 	mainClass = 'hexlet.code.AppApplication'
@@ -28,25 +27,49 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-//	implementation 'io.jsonwebtoken:jjwt:0.11.5'
-	implementation 'org.liquibase:liquibase-core'
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.0.2'
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'org.postgresql:postgresql'
+	implementation(
+			'org.springframework.boot:spring-boot-starter-actuator',
+			'org.springframework.boot:spring-boot-starter-data-jpa',
+			'org.springframework.boot:spring-boot-starter-security',
+			'org.springframework.boot:spring-boot-starter-validation',
+			'org.springframework.boot:spring-boot-starter-web',
+			'org.liquibase:liquibase-core',
+			'org.springdoc:springdoc-openapi-starter-webmvc-api:2.0.2',
+			'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+	)
+//	implementation 'io.jsonwebtoken:jjwt:0.11.5'
+	runtimeOnly (
+			'com.h2database:h2:2.1.214',
+			'org.postgresql:postgresql:42.2.24'
+	)
+	testImplementation(
+			'org.springframework.boot:spring-boot-starter-test',
+			'org.springframework.security:spring-security-test'
+	)
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
+	liquibaseRuntime(
+			sourceSets.main.output,
+			'com.h2database:h2:2.1.214',
+			'org.liquibase:liquibase-core:4.19.0',
+			'org.liquibase.ext:liquibase-hibernate6:4.19.0',
+			'org.springframework.boot:spring-boot-starter-data-jpa',
+			'info.picocli:picocli:4.7.1'
+	)
 }
 
 test {
 	useJUnitPlatform()
+}
+
+compileJava {
+	options.release = 17
+	options.encoding = 'UTF-8'
+}
+
+wrapper {
+	gradleVersion = '7.6'
+	distributionType = Wrapper.DistributionType.ALL
 }
 
 diffChangeLog {
@@ -67,10 +90,6 @@ checkstyle {
 	toolVersion '9.0'
 }
 
-wrapper {
-	gradleVersion = '7.6'
-}
-
 // Настраиваем Liquibase
 liquibase {
 	activities {
@@ -79,9 +98,9 @@ liquibase {
 			url 'jdbc:h2:./taskManager'
 			username ''
 			password ''
-			referenceUrl 'hibernate:spring:io.hexlet.javaspringblog.model.' +
+			referenceUrl 'hibernate:spring:hexlet.code.model.' +
 					'?dialect=org.hibernate.dialect.H2Dialect' +
-					'&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy'
+					'&hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy'
 		}
 	}
 }

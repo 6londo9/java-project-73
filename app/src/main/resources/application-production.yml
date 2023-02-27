@@ -6,11 +6,14 @@ logging:
     root: INFO
 
 spring:
+  config:
+    activate:
+      on-profile: production
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:./taskManager
-    username:
-    password:
+    driver-class-name: org.postgresql.Driver
+    username: ${MYSQLUSER}
+    password: ${MYSQLPASSWORD}
+    url: ${MYSQL_URL}
   jpa:
     show-sql: true
     hibernate:
@@ -18,13 +21,6 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/changelog-master.xml
-
-  h2:
-    console:
-      enabled: true
-      path: /h2console/
-      settings:
-        web-allow-others: true
 
 springdoc:
   swagger-ui:

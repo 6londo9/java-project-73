@@ -34,14 +34,17 @@ dependencies {
 			'org.springframework.boot:spring-boot-starter-security',
 			'org.springframework.boot:spring-boot-starter-validation',
 			'org.springframework.boot:spring-boot-starter-web',
-			'io.jsonwebtoken:jjwt:0.9.1',
+			'io.jsonwebtoken:jjwt-api:0.11.5',
+			'io.jsonwebtoken:jjwt-impl:0.11.5',
+			'io.jsonwebtoken:jjwt-jackson:0.11.5',
 			'org.liquibase:liquibase-core',
 			'org.springdoc:springdoc-openapi-starter-webmvc-api:2.0.2',
 			'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 	)
 	runtimeOnly (
 			'com.h2database:h2:2.1.214',
-			'org.postgresql:postgresql:42.2.24'
+			'org.postgresql:postgresql:42.2.24',
+			'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	)
 	testImplementation(
 			'org.springframework.boot:spring-boot-starter-test',

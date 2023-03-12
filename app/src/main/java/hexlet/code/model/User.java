@@ -7,12 +7,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Temporal;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.Instant;
+import java.util.Date;
+
+import static jakarta.persistence.TemporalType.TIMESTAMP;
 
 @Getter
 @Setter
@@ -33,7 +36,8 @@ public class User {
     @NotBlank
     @JsonIgnore
     private String password;
-    @CreatedDate
-    private Instant createdAt;
+    @CreationTimestamp
+    @Temporal(TIMESTAMP)
+    private Date createdAt;
 
 }

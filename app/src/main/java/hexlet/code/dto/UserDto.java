@@ -16,13 +16,15 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserDto {
     @NotBlank
+    @Size(min = 1)
     private String firstName;
     @NotBlank
+    @Size(min = 1)
     private String lastName;
     @NotBlank
     @Email
     private String email;
     @NotBlank
-    @Size(min = 6, max = 16)
+    @Size(min = 3)
     private String password;
 }

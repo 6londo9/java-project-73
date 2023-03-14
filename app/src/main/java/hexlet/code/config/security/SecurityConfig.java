@@ -1,11 +1,11 @@
 package hexlet.code.config.security;
 
-import hexlet.code.filter.JWTAuthenticationFilter;
+import hexlet.code.component.JWTHelper;
+import hexlet.code.component.JWTHttpConfigurer;
 import hexlet.code.filter.JWTAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -49,12 +49,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-        final var authenticationFilter = new JWTAuthenticationFilter(
-                authenticationManager,
-                loginRequest,
-                jwtHelper
-        );
 
         final var authorizationFilter = new JWTAuthorizationFilter(
                 publicUrls,
@@ -67,7 +61,8 @@ public class SecurityConfig {
                             auth.requestMatchers(publicUrls).permitAll();
                             auth.anyRequest().authenticated();
                 })
-                .addFilter(authenticationFilter)
+                .apply(new JWTHttpConfigurer(jwtHelper, loginRequest))
+                .and()
                 .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement().disable()
                 .formLogin().disable()

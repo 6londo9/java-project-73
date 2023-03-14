@@ -1,4 +1,4 @@
-package hexlet.code.config.security;
+package hexlet.code.component;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Clock;
@@ -27,9 +27,9 @@ public class JWTHelper {
     private final Clock clock;
 
     public JWTHelper(@Value("${jwt.issuer:task_manager}") final String issuer,
-                     @Value("${jwt.expiration-sec:86400}") final Long expirationSec,
-                     @Value("${jwt.clock-skew-sec:300}") final Long clockSkewSec,
-                     @Value("${jwt.secret:secret}") final String secret) {
+        @Value("${jwt.expiration-sec:86400}") final Long expirationSec,
+        @Value("${jwt.clock-skew-sec:300}") final Long clockSkewSec,
+        @Value("${jwt.secret}") final String secret) {
         this.issuer = issuer;
         this.expirationSec = expirationSec;
         this.clockSkewSec = clockSkewSec;

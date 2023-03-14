@@ -1,10 +1,9 @@
 package hexlet.code.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.config.security.JWTHelper;
+import hexlet.code.component.JWTHelper;
 import hexlet.code.dto.LoginDto;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private final JWTHelper jwtHelper;
 
@@ -59,7 +59,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
+                                            Authentication authResult) throws IOException {
         final UserDetails user = (UserDetails) authResult.getPrincipal();
         final String token = jwtHelper.expiring(Map.of(SPRING_SECURITY_FORM_USERNAME_KEY, user.getUsername()));
 

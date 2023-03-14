@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @Component
@@ -23,7 +24,6 @@ public class TestUtils {
     @Autowired
     private UserRepository userRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(TestUtils.class);
-    public static final String URL = "/api/users";
     private final UserDto testUserDto = new UserDto(
             "Ivan", "Ivanov", "ivanov@email.ru", "ivanov"
     );
@@ -44,7 +44,7 @@ public class TestUtils {
     }
     public ResultActions registerUser(final UserDto userDto) throws Exception {
         LOGGER.debug("USERDTO: " + userDto.toString());
-        final var request = post(URL)
+        final var request = post(USER_CONTROLLER_PATH)
                 .content(asJson(userDto))
                 .contentType(MediaType.APPLICATION_JSON);
         return perform(request);

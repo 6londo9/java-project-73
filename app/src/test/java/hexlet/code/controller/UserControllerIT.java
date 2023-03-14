@@ -94,7 +94,7 @@ public class UserControllerIT {
                 .lastName("Kubitsky")
                 .password("vasilkube")
                 .build();
-        testUtils.registerUser(user1);
+        testUtils.registerUser(user2);
         assertEquals(3, userRepository.count());
 
         final var response = testUtils.perform(get(USER_CONTROLLER_PATH))

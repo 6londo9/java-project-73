@@ -29,6 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
 import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
+import static hexlet.code.controller.UserController.ID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = SpringConfigForIT.class)
 @AutoConfigureMockMvc
@@ -58,7 +59,9 @@ public class UserControllerIT {
         testUtils.registerDefaultUser();
         final User expectedUser = userRepository.findAll().get(0);
 
-        final var response = testUtils.perform(get(USER_CONTROLLER_PATH + "/" + expectedUser.getId()))
+        final var response = testUtils.perform(
+                get(USER_CONTROLLER_PATH + ID, expectedUser.getId()),
+                        expectedUser.getEmail())
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -133,14 +136,15 @@ public class UserControllerIT {
                 .build();
 
         testUtils.perform(
-                put(USER_CONTROLLER_PATH + "/" + currentUser.getId())
+                put(USER_CONTROLLER_PATH + ID, currentUser.getId())
                 .content(asJson(newUserDto))
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON),
+                currentUser.getEmail()
         ).andExpect(status().isOk());
 
         assertTrue(userRepository.existsById(currentUser.getId()));
         assertNotNull(userRepository.findByEmail("new@gmail.com"));
-        assertNull(userRepository.findByEmail("vasya@gmail.com"));
+        assertNull(userRepository.findByEmail("vasya@gmail.com").orElse(null));
     }
 
     @Test
@@ -150,7 +154,8 @@ public class UserControllerIT {
 
         final var user = userRepository.findAll().get(0);
 
-        testUtils.perform(delete(USER_CONTROLLER_PATH + "/" + user.getId())).andExpect(status().isOk());
+        testUtils.perform(delete(USER_CONTROLLER_PATH + ID, user.getId()), user.getEmail())
+                .andExpect(status().isOk());
         assertEquals(0, userRepository.count());
     }
 }

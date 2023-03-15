@@ -35,7 +35,7 @@ import static hexlet.code.controller.UserController.ID;
 @AutoConfigureMockMvc
 @ActiveProfiles(TEST_PROFILE)
 public class UserControllerIT {
-
+// TODO: Make tests for negative results
     @Autowired
     private UserRepository userRepository;
     @Autowired

@@ -12,5 +12,6 @@ It is a web app, where users can register, write comments and etc...
 ---
 To make app work, start it by
 ```
-make start #http://localhost:5000
+make start
 ```
+It will be available on the path: http://localhost:5000

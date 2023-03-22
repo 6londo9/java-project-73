@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.component.JWTHelper;
+import hexlet.code.dto.TaskStatusDto;
 import hexlet.code.dto.UserDto;
+import hexlet.code.model.User;
+import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +22,8 @@ import java.util.Map;
 
 import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static hexlet.code.controller.TaskStatusController.TASK_CONTROLLER_PATH;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @Component
@@ -27,6 +32,8 @@ public class TestUtils {
     private MockMvc mockMvc;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private TaskStatusRepository taskStatusRepository;
     @Autowired
     private JWTHelper jwtHelper;
     private static final Logger LOGGER = LoggerFactory.getLogger(TestUtils.class);
@@ -40,11 +47,9 @@ public class TestUtils {
 
     public void tearDown() {
         userRepository.deleteAll();
+        taskStatusRepository.deleteAll();
     }
 
-    public UserDto getTestUserDto() {
-        return testUserDto;
-    }
     public ResultActions registerDefaultUser() throws Exception {
         return registerUser(testUserDto);
     }
@@ -53,6 +58,31 @@ public class TestUtils {
         final var request = post(USER_CONTROLLER_PATH)
                 .content(asJson(userDto))
                 .contentType(MediaType.APPLICATION_JSON);
+        return perform(request);
+    }
+
+    private final TaskStatusDto taskDto = new TaskStatusDto(
+            "Testing"
+    );
+
+    public ResultActions createTask(TaskStatusDto dto) throws Exception {
+        final var request = post(TASK_CONTROLLER_PATH)
+                .content(asJson(dto))
+                .contentType(MediaType.APPLICATION_JSON);
+        return perform(request);
+    }
+
+    public ResultActions createDefaultTask() throws Exception {
+        registerDefaultUser();
+        User user = userRepository.findAll().get(0);
+        final var request = post(TASK_CONTROLLER_PATH)
+                .content(asJson(taskDto))
+                .contentType(MediaType.APPLICATION_JSON);
+        return perform(request, user.getEmail());
+    }
+
+    public ResultActions getTasks() throws Exception {
+        final var request = get(TASK_CONTROLLER_PATH);
         return perform(request);
     }
 

@@ -9,8 +9,10 @@ public interface UserService {
 
     User createUser(UserDto userDto);
     User updateUser(Long id, UserDto userDto);
-    User getCurrentUser(Long id);
+    User getUserById(Long id);
     User getByEmail(String email);
     List<User> getAllUsers();
     void deleteUser(Long id);
+    String getCurrentUserName();
+    User getCurrentUser();
 }

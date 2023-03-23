@@ -2,6 +2,7 @@ package hexlet.code.controller;
 
 import hexlet.code.dto.UserDto;
 import hexlet.code.model.User;
+import hexlet.code.repository.UserRepository;
 import hexlet.code.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class UserController {
             @userRepository.findById(#id).get().getEmail() == authentication.getName()
         """;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @GetMapping
     public List<User> getUsers() {
@@ -40,7 +42,7 @@ public class UserController {
             @PathVariable
             Long id
     ) {
-        return userService.getCurrentUser(id);
+        return userService.getUserById(id);
     }
 
     @PostMapping

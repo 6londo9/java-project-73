@@ -17,17 +17,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
 
-import static hexlet.code.controller.TaskStatusController.TASK_CONTROLLER_PATH;
+import static hexlet.code.controller.TaskStatusController.TASK_STATUS_CONTROLLER_PATH;
 import static hexlet.code.controller.UserController.ID;
 
 @RestController
-@RequestMapping("${base-url}" + TASK_CONTROLLER_PATH)
+@RequestMapping("${base-url}" + TASK_STATUS_CONTROLLER_PATH)
 @AllArgsConstructor
 public class TaskStatusController {
-    public static final String TASK_CONTROLLER_PATH = "/statuses";
-//    private static final String ONLY_USER_BY_ID = """
-//            @userRepository.findById(#id).get().getEmail() == authentication.getName()
-//        """;
+    public static final String TASK_STATUS_CONTROLLER_PATH = "/statuses";
     private final TaskStatusService taskService;
     private final UserRepository userRepository;
 
@@ -45,7 +42,6 @@ public class TaskStatusController {
     }
 
     @PostMapping
-//    @PreAuthorize(ONLY_USER_BY_ID)
     public TaskStatus createTaskStatus(
             @Valid
             @RequestBody
@@ -55,7 +51,6 @@ public class TaskStatusController {
     }
 
     @PutMapping(ID)
-//    @PreAuthorize(ONLY_USER_BY_ID)
     public TaskStatus updateTaskStatus(
             @PathVariable
             Long id,
@@ -67,7 +62,6 @@ public class TaskStatusController {
     }
 
     @DeleteMapping(ID)
-//    @PreAuthorize(ONLY_USER_BY_ID)
     public void deleteTaskStatus(
             @PathVariable
             Long id

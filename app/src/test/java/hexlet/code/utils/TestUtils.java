@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static hexlet.code.controller.TaskStatusController.TASK_CONTROLLER_PATH;
+import static hexlet.code.controller.TaskStatusController.TASK_STATUS_CONTROLLER_PATH;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -66,7 +66,7 @@ public class TestUtils {
     );
 
     public ResultActions createTask(TaskStatusDto dto) throws Exception {
-        final var request = post(TASK_CONTROLLER_PATH)
+        final var request = post(TASK_STATUS_CONTROLLER_PATH)
                 .content(asJson(dto))
                 .contentType(MediaType.APPLICATION_JSON);
         return perform(request);
@@ -75,14 +75,14 @@ public class TestUtils {
     public ResultActions createDefaultTask() throws Exception {
         registerDefaultUser();
         User user = userRepository.findAll().get(0);
-        final var request = post(TASK_CONTROLLER_PATH)
+        final var request = post(TASK_STATUS_CONTROLLER_PATH)
                 .content(asJson(taskDto))
                 .contentType(MediaType.APPLICATION_JSON);
         return perform(request, user.getEmail());
     }
 
     public ResultActions getTasks() throws Exception {
-        final var request = get(TASK_CONTROLLER_PATH);
+        final var request = get(TASK_STATUS_CONTROLLER_PATH);
         return perform(request);
     }
 

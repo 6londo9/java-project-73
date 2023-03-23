@@ -25,7 +25,7 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     @Override
     public TaskStatus getTaskStatus(Long id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new TaskStatusException("Task with such id not found"));
+                .orElseThrow(() -> new TaskStatusException("Task with id: " + id + " not found."));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     @Override
     public TaskStatus updateTaskStatus(Long id, TaskStatusDto taskStatusDto) {
         TaskStatus taskStatusToUpdate = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskStatusException("Task with such id not found"));
+                .orElseThrow(() -> new TaskStatusException("Task with id " + id + " not found."));
         taskStatusToUpdate.setName(taskStatusDto.getName());
         return taskRepository.save(taskStatusToUpdate);
     }
@@ -49,6 +49,6 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     @Override
     public TaskStatus findByName(String name) {
         return taskRepository.findByName(name)
-                .orElseThrow(() -> new TaskStatusException("Task with such name is not found"));
+                .orElseThrow(() -> new TaskStatusException("Task with name: " + name + " is not found."));
     }
 }

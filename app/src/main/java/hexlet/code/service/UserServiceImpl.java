@@ -5,6 +5,7 @@ import hexlet.code.exception.UserException;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User updateUser(Long id, UserDto userDto) {
         final User userToUpdate = userRepository.findById(id)
-                .orElseThrow(() -> new UserException("User with such id not found"));
+                .orElseThrow(() -> new UserException("User with id: " + id + " not found."));
         userToUpdate.setFirstName(userDto.getFirstName());
         userToUpdate.setLastName(userDto.getLastName());
         userToUpdate.setEmail(userDto.getEmail());
@@ -45,9 +46,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User getCurrentUser(Long id) {
+    public User getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserException("User with such id not found"));
+                .orElseThrow(() -> new UserException("User with id " + id + " not found."));
     }
 
     @Override
@@ -64,6 +65,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public String getCurrentUserName() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    @Override
+    public User getCurrentUser() {
+        String email = getCurrentUserName();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException("User with 'email' " + email + " not found."));
     }
 
     @Override

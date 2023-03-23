@@ -1,6 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet author="6londo9 (generated)" id="1679361786871-1">
+    <changeSet author="6londo9 (generated)" id="1679566580620-1">
         <createTable tableName="task_statuses">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="task_statusesPK"/>
@@ -9,7 +9,20 @@
             <column name="name" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="6londo9 (generated)" id="1679361786871-2">
+    <changeSet author="6londo9 (generated)" id="1679566580620-2">
+        <createTable tableName="tasks">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="tasksPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP(6)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="author_id" type="BIGINT"/>
+            <column name="executor_id" type="BIGINT"/>
+            <column name="task_status_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="6londo9 (generated)" id="1679566580620-3">
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="usersPK"/>
@@ -21,7 +34,16 @@
             <column name="password" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="6londo9 (generated)" id="1679361786871-3">
+    <changeSet author="6londo9 (generated)" id="1679566580620-4">
         <addUniqueConstraint columnNames="email" constraintName="UC_USERSEMAIL_COL" tableName="users"/>
+    </changeSet>
+    <changeSet author="6londo9 (generated)" id="1679566580620-5">
+        <addForeignKeyConstraint baseColumnNames="task_status_id" baseTableName="tasks" constraintName="FK7xndk7y2uk29wdu734xyutbqe" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="task_statuses" validate="true"/>
+    </changeSet>
+    <changeSet author="6londo9 (generated)" id="1679566580620-6">
+        <addForeignKeyConstraint baseColumnNames="executor_id" baseTableName="tasks" constraintName="FKbrg922bkqn5m7212jsqjg6ioe" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="6londo9 (generated)" id="1679566580620-7">
+        <addForeignKeyConstraint baseColumnNames="author_id" baseTableName="tasks" constraintName="FKhods8r8oyyx7tuj3c91ki2sk1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="users" validate="true"/>
     </changeSet>
 </databaseChangeLog>

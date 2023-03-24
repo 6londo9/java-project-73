@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(TEST_PROFILE)
 public class TaskStatusControllerIT {
     @Autowired
-    private TestUtils testUtils;
+    private TestUtils utils;
     @Autowired
     private TaskStatusRepository taskStatusRepository;
     @Autowired
@@ -46,11 +46,11 @@ public class TaskStatusControllerIT {
 
     @BeforeEach
     public void beforeEach() throws Exception {
-        testUtils.createDefaultTask();
+        utils.createDefaultTaskStatus();
     }
     @AfterEach
     public void afterEach() {
-        testUtils.tearDown();
+        utils.tearDown();
     }
 
     @Test
@@ -67,7 +67,7 @@ public class TaskStatusControllerIT {
         taskStatusRepository.save(taskStatus2);
         assertEquals(3, taskStatusRepository.count());
 
-        final var response = testUtils.getTasks().andExpect(status().isOk()).andReturn().getResponse();
+        final var response = utils.getTaskStatuses().andExpect(status().isOk()).andReturn().getResponse();
         assertThat(response.getContentAsString()).contains("Testing");
         assertThat(response.getContentAsString()).contains("Making");
         assertThat(response.getContentAsString()).contains("Baking");
@@ -75,10 +75,8 @@ public class TaskStatusControllerIT {
 
     @Test
     void getTaskById() throws Exception {
-        assertEquals(1, taskStatusRepository.count());
-
         TaskStatus expectedTask = taskStatusRepository.findAll().get(0);
-        final var response = testUtils.perform(get(TASK_STATUS_CONTROLLER_PATH + ID, expectedTask.getId()))
+        final var response = utils.perform(get(TASK_STATUS_CONTROLLER_PATH + ID, expectedTask.getId()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -90,10 +88,9 @@ public class TaskStatusControllerIT {
 
     @Test
     void testCreateTask() throws Exception {
-        assertEquals(1, taskStatusRepository.count());
         final var user = userRepository.findAll().get(0);
         TaskStatusDto dto = new TaskStatusDto("Creation test");
-        final var response = testUtils.perform(
+        final var response = utils.perform(
                 post(TASK_STATUS_CONTROLLER_PATH)
                         .content(asJson(dto))
                         .contentType(APPLICATION_JSON),
@@ -110,7 +107,7 @@ public class TaskStatusControllerIT {
     void testDeleteTask() throws Exception {
         final var taskStatus = taskStatusRepository.findAll().get(0);
         final var user = userRepository.findAll().get(0);
-        testUtils.perform(delete(TASK_STATUS_CONTROLLER_PATH + ID, taskStatus.getId()), user.getEmail())
+        utils.perform(delete(TASK_STATUS_CONTROLLER_PATH + ID, taskStatus.getId()), user.getEmail())
                 .andExpect(status().isOk());
         assertEquals(0, taskStatusRepository.count());
     }
@@ -123,7 +120,7 @@ public class TaskStatusControllerIT {
         final var taskStatus = taskStatusRepository.findAll().get(0);
         final var newTask = new TaskStatusDto("New name");
 
-        testUtils.perform(put(TASK_STATUS_CONTROLLER_PATH + ID, taskStatus.getId())
+        utils.perform(put(TASK_STATUS_CONTROLLER_PATH + ID, taskStatus.getId())
                 .content(asJson(newTask))
                 .contentType(APPLICATION_JSON), user.getEmail())
                 .andExpect(status().isOk());

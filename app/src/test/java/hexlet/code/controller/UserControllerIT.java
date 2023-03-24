@@ -39,27 +39,27 @@ public class UserControllerIT {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private TestUtils testUtils;
+    private TestUtils utils;
 
     @AfterEach
     public void tearDown() {
-        testUtils.tearDown();
+        utils.tearDown();
     }
 
     @Test
     void testCreateUser() throws Exception {
         assertEquals(0, userRepository.count());
-        testUtils.registerDefaultUser().andExpect(status().isOk());
+        utils.registerDefaultUser().andExpect(status().isOk());
         assertEquals(1, userRepository.count());
     }
 
     @Test
     void testGetUserById() throws Exception {
         assertEquals(0, userRepository.count());
-        testUtils.registerDefaultUser();
+        utils.registerDefaultUser();
         final User expectedUser = userRepository.findAll().get(0);
 
-        final var response = testUtils.perform(
+        final var response = utils.perform(
                 get(USER_CONTROLLER_PATH + ID, expectedUser.getId()),
                         expectedUser.getEmail())
                 .andExpect(status().isOk())
@@ -77,7 +77,7 @@ public class UserControllerIT {
 
     @Test
     void testGetUsers() throws Exception {
-        testUtils.registerDefaultUser();
+        utils.registerDefaultUser();
         assertEquals(1, userRepository.count());
 
         UserDto user1 = UserDto
@@ -87,7 +87,7 @@ public class UserControllerIT {
                 .lastName("Novatsky")
                 .password("enovatsky")
                 .build();
-        testUtils.registerUser(user1);
+        utils.registerUser(user1);
         assertEquals(2, userRepository.count());
 
         UserDto user2 = UserDto
@@ -97,10 +97,10 @@ public class UserControllerIT {
                 .lastName("Kubitsky")
                 .password("vasilkube")
                 .build();
-        testUtils.registerUser(user2);
+        utils.registerUser(user2);
         assertEquals(3, userRepository.count());
 
-        final var response = testUtils.perform(get(USER_CONTROLLER_PATH))
+        final var response = utils.perform(get(USER_CONTROLLER_PATH))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -124,7 +124,7 @@ public class UserControllerIT {
                 .lastName("Kubitsky")
                 .password("vasilkube")
                 .build();
-        testUtils.registerUser(currentUserDto);
+        utils.registerUser(currentUserDto);
 
         User currentUser = userRepository.findAll().get(0);
         final var newUserDto = UserDto
@@ -135,7 +135,7 @@ public class UserControllerIT {
                 .password("newpassword")
                 .build();
 
-        testUtils.perform(
+        utils.perform(
                 put(USER_CONTROLLER_PATH + ID, currentUser.getId())
                 .content(asJson(newUserDto))
                 .contentType(MediaType.APPLICATION_JSON),
@@ -149,12 +149,12 @@ public class UserControllerIT {
 
     @Test
     void testDeleteUser() throws Exception {
-        testUtils.registerDefaultUser();
+        utils.registerDefaultUser();
         assertEquals(1, userRepository.count());
 
         final var user = userRepository.findAll().get(0);
 
-        testUtils.perform(delete(USER_CONTROLLER_PATH + ID, user.getId()), user.getEmail())
+        utils.perform(delete(USER_CONTROLLER_PATH + ID, user.getId()), user.getEmail())
                 .andExpect(status().isOk());
         assertEquals(0, userRepository.count());
     }

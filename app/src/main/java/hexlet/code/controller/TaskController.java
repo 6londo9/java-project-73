@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
 
-import static hexlet.code.controller.TaskController.TASKS_CONTROLLER_PATH;
+import static hexlet.code.controller.TaskController.TASK_CONTROLLER_PATH;
 import static hexlet.code.controller.UserController.ID;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("${base-url}" + TASKS_CONTROLLER_PATH)
+@RequestMapping("${base-url}" + TASK_CONTROLLER_PATH)
 public class TaskController {
-    public static final String TASKS_CONTROLLER_PATH = "/tasks";
+    public static final String TASK_CONTROLLER_PATH = "/tasks";
     private static final String ONLY_AUTHOR_BY_ID = """
             @taskRepository.findById(#id).get().getAuthor().getEmail() == authentication.getName()
         """;

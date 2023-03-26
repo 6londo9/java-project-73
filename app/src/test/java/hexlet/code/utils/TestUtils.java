@@ -4,17 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.component.JWTHelper;
+import hexlet.code.dto.LabelDto;
 import hexlet.code.dto.TaskDto;
 import hexlet.code.dto.TaskStatusDto;
 import hexlet.code.dto.UserDto;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,9 +25,10 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static hexlet.code.controller.TaskStatusController.TASK_STATUS_CONTROLLER_PATH;
 import static hexlet.code.controller.TaskController.TASK_CONTROLLER_PATH;
+import static hexlet.code.controller.LabelController.LABEL_CONTROLLER_PATH;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -43,31 +44,38 @@ public class TestUtils {
     @Autowired
     private TaskRepository taskRepository;
     @Autowired
+    private LabelRepository labelRepository;
+    @Autowired
     private JWTHelper jwtHelper;
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestUtils.class);
-    private final UserDto testUserDto = new UserDto(
-            "Ivan", "Ivanov", "ivanov@email.ru", "ivanov"
-    );
 
     public void tearDown() {
         taskRepository.deleteAll();
         userRepository.deleteAll();
         taskStatusRepository.deleteAll();
+        labelRepository.deleteAll();
     }
 
-    // User utils
+    public static final String USER_EMAIL = "ivanov@email.ru";
+
+    /**
+     *  User utils
+     */
+    private final UserDto testUserDto = new UserDto(
+            "Ivan", "Ivanov", "ivanov@email.ru", "ivanov"
+    );
     public ResultActions registerDefaultUser() throws Exception {
         return registerUser(testUserDto);
     }
     public ResultActions registerUser(final UserDto userDto) throws Exception {
-        LOGGER.debug("USERDTO: " + userDto.toString());
         final var request = post(USER_CONTROLLER_PATH)
                 .content(asJson(userDto))
                 .contentType(APPLICATION_JSON);
         return perform(request);
     }
 
-    // Task utils
+    /**
+     *  Task utils
+     */
     public ResultActions createDefaultTask() throws Exception {
         createDefaultTaskStatus();
         User user = userRepository.findAll().get(0);
@@ -81,7 +89,7 @@ public class TestUtils {
         final var request = post(TASK_CONTROLLER_PATH)
                 .content(asJson(dto))
                 .contentType(APPLICATION_JSON);
-        return perform(request, user.getEmail());
+        return perform(request, USER_EMAIL);
     }
 
     public ResultActions getTasks() throws Exception {
@@ -94,23 +102,23 @@ public class TestUtils {
         task.setName(name);
         task.setDescription(description);
         task.setTaskStatus(status);
-        task.setAuthor(user);
         task.setExecutor(user);
         return task;
     }
 
-    // TaskStatus utils
+    /**
+     *  Task status utils
+     */
     private final TaskStatusDto taskStatusDto = new TaskStatusDto(
             "Testing"
     );
 
     public ResultActions createDefaultTaskStatus() throws Exception {
         registerDefaultUser();
-        User user = userRepository.findAll().get(0);
         final var request = post(TASK_STATUS_CONTROLLER_PATH)
                 .content(asJson(taskStatusDto))
                 .contentType(APPLICATION_JSON);
-        return perform(request, user.getEmail());
+        return perform(request, USER_EMAIL);
     }
 
     public ResultActions getTaskStatuses() throws Exception {
@@ -119,15 +127,33 @@ public class TestUtils {
     }
 
     public ResultActions createTaskStatus(TaskStatusDto dto) throws Exception {
-        User user = userRepository.findAll().get(0);
         final var request = post(TASK_STATUS_CONTROLLER_PATH)
                 .content(asJson(dto))
                 .contentType(APPLICATION_JSON);
-        return perform(request, user.getEmail());
+        return perform(request, USER_EMAIL);
     }
 
+    /**
+     *  Label utils
+     */
+    private final LabelDto labelDto = new LabelDto("Bug");
+    public ResultActions createDefaultLabel() throws Exception {
+        registerDefaultUser();
+        final var request = post(LABEL_CONTROLLER_PATH)
+                .content(asJson(labelDto))
+                .contentType(APPLICATION_JSON);
+        return perform(request, USER_EMAIL);
+    }
+    public ResultActions createLabel(LabelDto dto) throws Exception {
+        final var request = post(LABEL_CONTROLLER_PATH)
+                .content(asJson(dto))
+                .contentType(APPLICATION_JSON);
+        return perform(request, USER_EMAIL);
+    }
 
-    // Request utils
+    /**
+     *  Request utils
+     */
     public ResultActions perform(final MockHttpServletRequestBuilder request, final String byUser) throws Exception {
         final String token = jwtHelper.expiring(Map.of("username", byUser));
         request.header(AUTHORIZATION, token);

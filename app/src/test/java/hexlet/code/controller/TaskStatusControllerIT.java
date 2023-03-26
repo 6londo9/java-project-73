@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import static hexlet.code.utils.TestUtils.USER_EMAIL;
 import static hexlet.code.utils.TestUtils.asJson;
 import static hexlet.code.utils.TestUtils.fromJson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -88,13 +89,12 @@ public class TaskStatusControllerIT {
 
     @Test
     void testCreateTask() throws Exception {
-        final var user = userRepository.findAll().get(0);
         TaskStatusDto dto = new TaskStatusDto("Creation test");
         final var response = utils.perform(
                 post(TASK_STATUS_CONTROLLER_PATH)
                         .content(asJson(dto))
                         .contentType(APPLICATION_JSON),
-                        user.getEmail())
+                        USER_EMAIL)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -106,8 +106,7 @@ public class TaskStatusControllerIT {
     @Test
     void testDeleteTask() throws Exception {
         final var taskStatus = taskStatusRepository.findAll().get(0);
-        final var user = userRepository.findAll().get(0);
-        utils.perform(delete(TASK_STATUS_CONTROLLER_PATH + ID, taskStatus.getId()), user.getEmail())
+        utils.perform(delete(TASK_STATUS_CONTROLLER_PATH + ID, taskStatus.getId()), USER_EMAIL)
                 .andExpect(status().isOk());
         assertEquals(0, taskStatusRepository.count());
     }
@@ -115,14 +114,13 @@ public class TaskStatusControllerIT {
     @Test
     void testUpdateTaskStatus() throws Exception {
         assertEquals(1, taskStatusRepository.count());
-        final var user = userRepository.findAll().get(0);
 
         final var taskStatus = taskStatusRepository.findAll().get(0);
         final var newTask = new TaskStatusDto("New name");
 
         utils.perform(put(TASK_STATUS_CONTROLLER_PATH + ID, taskStatus.getId())
                 .content(asJson(newTask))
-                .contentType(APPLICATION_JSON), user.getEmail())
+                .contentType(APPLICATION_JSON), USER_EMAIL)
                 .andExpect(status().isOk());
         assertTrue(taskStatusRepository.existsById(taskStatus.getId()));
         assertNull(taskStatusRepository.findByName("Testing").orElse(null));

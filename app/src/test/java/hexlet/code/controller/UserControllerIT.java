@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import static hexlet.code.config.SpringConfigForIT.TEST_PROFILE;
 import static hexlet.code.utils.TestUtils.asJson;
 import static hexlet.code.utils.TestUtils.fromJson;
+import static hexlet.code.utils.TestUtils.USER_EMAIL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -61,7 +62,7 @@ public class UserControllerIT {
 
         final var response = utils.perform(
                 get(USER_CONTROLLER_PATH + ID, expectedUser.getId()),
-                        expectedUser.getEmail())
+                        USER_EMAIL)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();

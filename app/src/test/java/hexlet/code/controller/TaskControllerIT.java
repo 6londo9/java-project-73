@@ -73,9 +73,9 @@ public class TaskControllerIT {
 
         final var response = utils.getTasks().andExpect(status().isOk()).andReturn().getResponse();
         assertEquals(3, taskRepository.count());
-        assertThat(response.getContentAsString().contains("Test"));
-        assertThat(response.getContentAsString().contains("Work"));
-        assertThat(response.getContentAsString().contains("Testing"));
+        assertThat(response.getContentAsString()).contains("Test");
+        assertThat(response.getContentAsString()).contains("Work");
+        assertThat(response.getContentAsString()).contains("Testing");
     }
     @Test
     void testGetTaskById() throws Exception {

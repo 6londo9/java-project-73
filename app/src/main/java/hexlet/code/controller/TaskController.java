@@ -2,7 +2,6 @@ package hexlet.code.controller;
 
 import hexlet.code.dto.TaskDto;
 import hexlet.code.model.Task;
-import hexlet.code.repository.TaskRepository;
 import hexlet.code.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -30,7 +29,6 @@ public class TaskController {
             @taskRepository.findById(#id).get().getAuthor().getEmail() == authentication.getName()
         """;
     private final TaskService taskService;
-    private final TaskRepository taskRepository;
 
     @GetMapping
     public List<Task> getAllTasks() {

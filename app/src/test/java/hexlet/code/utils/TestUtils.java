@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
@@ -71,7 +72,11 @@ public class TestUtils {
         createDefaultTaskStatus();
         User user = userRepository.findAll().get(0);
         TaskStatus taskStatus = taskStatusRepository.findAll().get(0);
-        TaskDto dto = new TaskDto("Testing", "Test task endpoints", taskStatus.getId(), user.getId());
+        TaskDto dto = new TaskDto("Testing",
+                "Test task endpoints",
+                taskStatus.getId(),
+                user.getId(),
+                new ArrayList<>());
 
         final var request = post(TASK_CONTROLLER_PATH)
                 .content(asJson(dto))

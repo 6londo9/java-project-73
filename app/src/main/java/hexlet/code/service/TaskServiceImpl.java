@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -19,6 +20,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final UserService userService;
     private final TaskStatusService taskStatusService;
+    private final LabelService labelService;
     @Override
     public List<Task> getTasks() {
         return taskRepository.findAll();
@@ -27,7 +29,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task getTaskById(Long id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new TaskException("Task with id: " + id + " not found."));
+                .orElseThrow(() -> new TaskException("Task with id: " + id + " is not found."));
     }
 
     @Override
@@ -39,7 +41,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task updateTask(Long id, TaskDto taskDto) {
         Task taskToUpdate = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskException("Task with id: " + id + " not found"));
+                .orElseThrow(() -> new TaskException("Task with id: " + id + " is not found."));
         return taskRepository.save(merge(taskToUpdate, taskDto));
     }
 
@@ -58,6 +60,11 @@ public class TaskServiceImpl implements TaskService {
         task.setTaskStatus(taskStatus);
         task.setAuthor(author);
         task.setExecutor(executor);
+        task.setLabels(
+                dto.getLabelIds().stream()
+                        .map(labelService::getLabel)
+                        .collect(Collectors.toList())
+        );
         return task;
     }
 }

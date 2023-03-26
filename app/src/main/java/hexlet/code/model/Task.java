@@ -3,9 +3,10 @@ package hexlet.code.model;
 import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Temporal;
 import jakarta.validation.constraints.NotBlank;
@@ -16,6 +17,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
+import java.util.List;
 
 import static jakarta.persistence.TemporalType.TIMESTAMP;
 
@@ -33,7 +35,7 @@ public class Task {
     private String name;
     private String description;
     @ManyToOne
-    @JoinColumn(name = "task_status_id")
+    @JoinColumn(name = "status_id")
     private TaskStatus taskStatus;
     @ManyToOne
     @JoinColumn(name = "author_id")
@@ -41,6 +43,8 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "executor_id")
     private User executor;
+    @ManyToMany(targetEntity = Label.class)
+    private List<Label> labels;
     @CreationTimestamp
     @Temporal(TIMESTAMP)
     private Date createdAt;

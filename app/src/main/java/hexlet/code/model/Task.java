@@ -43,7 +43,7 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "executor_id")
     private User executor;
-    @ManyToMany(targetEntity = Label.class)
+    @ManyToMany
     private Set<Label> labels;
     @CreationTimestamp
     @Temporal(TIMESTAMP)

@@ -14,6 +14,7 @@ import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -73,6 +74,25 @@ public class TaskControllerIT {
 
         final var response = utils.getTasks().andExpect(status().isOk()).andReturn().getResponse();
         assertEquals(3, taskRepository.count());
+        assertThat(response.getContentAsString()).contains("Test");
+        assertThat(response.getContentAsString()).contains("Work");
+        assertThat(response.getContentAsString()).contains("Testing");
+    }
+
+    @Test
+    @Disabled
+    void testGetFilteredTasks() throws Exception {
+        assertEquals(1, taskRepository.count());
+
+        User user = userRepository.findAll().get(0);
+        TaskStatus status = taskStatusRepository.findAll().get(0);
+        Task task1 = utils.task("Test", "Testing endpoint", status, user);
+        Task task2 = utils.task("Work", "Almost working", status, user);
+        taskRepository.save(task1);
+        taskRepository.save(task2);
+
+        final var response = utils.perform(get(TASK_CONTROLLER_PATH + "?labels=2"))
+        .andExpect(status().isOk()).andReturn().getResponse();
         assertThat(response.getContentAsString()).contains("Test");
         assertThat(response.getContentAsString()).contains("Work");
         assertThat(response.getContentAsString()).contains("Testing");

@@ -63,6 +63,9 @@ public class TestUtils {
     private final UserDto testUserDto = new UserDto(
             "Ivan", "Ivanov", "ivanov@email.ru", "ivanov"
     );
+    public UserDto getDefaultUser() {
+        return testUserDto;
+    }
     public ResultActions registerDefaultUser() throws Exception {
         return registerUser(testUserDto);
     }

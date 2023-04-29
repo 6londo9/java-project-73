@@ -17,7 +17,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.TemporalType.TIMESTAMP;
 
@@ -44,7 +44,7 @@ public class Task {
     @JoinColumn(name = "executor_id")
     private User executor;
     @ManyToMany(targetEntity = Label.class)
-    private List<Label> labels;
+    private Set<Label> labels;
     @CreationTimestamp
     @Temporal(TIMESTAMP)
     private Date createdAt;

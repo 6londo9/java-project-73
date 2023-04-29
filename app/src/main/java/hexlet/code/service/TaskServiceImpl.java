@@ -1,5 +1,6 @@
 package hexlet.code.service;
 
+import com.querydsl.core.types.Predicate;
 import hexlet.code.dto.TaskDto;
 import hexlet.code.exception.TaskException;
 import hexlet.code.model.Task;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,9 +23,13 @@ public class TaskServiceImpl implements TaskService {
     private final UserService userService;
     private final TaskStatusService taskStatusService;
     private final LabelService labelService;
+
     @Override
-    public List<Task> getTasks() {
-        return taskRepository.findAll();
+    public List<Task> getTasks(Predicate predicate) {
+        Iterable<Task> tasks = taskRepository.findAll(predicate);
+        List<Task> tasksList = new ArrayList<>();
+        tasks.forEach(tasksList::add);
+        return tasksList;
     }
 
     @Override
@@ -63,7 +69,7 @@ public class TaskServiceImpl implements TaskService {
         task.setLabels(
                 dto.getLabelIds().stream()
                         .map(labelService::getLabel)
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toSet())
         );
         return task;
     }

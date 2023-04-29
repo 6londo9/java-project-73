@@ -17,18 +17,19 @@ application {
 	mainClass = 'hexlet.code.AppApplication'
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
 repositories {
 	mavenCentral()
 }
 
 dependencies {
 	compileOnly 'org.projectlombok:lombok'
+
+	annotationProcessor(
+			'org.projectlombok:lombok',
+			'com.querydsl:querydsl-apt:5.0.0:jakarta',
+			'jakarta.persistence:jakarta.persistence-api:3.1.0'
+	)
+
 	implementation(
 			'org.springframework.boot:spring-boot-starter-actuator',
 			'org.springframework.boot:spring-boot-starter-data-jpa',
@@ -40,18 +41,22 @@ dependencies {
 			'io.jsonwebtoken:jjwt-jackson:0.11.5',
 			'org.liquibase:liquibase-core',
 			'org.springdoc:springdoc-openapi-starter-webmvc-api:2.0.2',
-			'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+			'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2',
+			'com.querydsl:querydsl-core:5.0.0',
+			'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	)
+
 	runtimeOnly (
 			'com.h2database:h2:2.1.214',
 			'org.postgresql:postgresql:42.2.24',
 			'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	)
+
 	testImplementation(
 			'org.springframework.boot:spring-boot-starter-test',
 			'org.springframework.security:spring-security-test'
 	)
-	annotationProcessor 'org.projectlombok:lombok'
+
 	liquibaseRuntime(
 			sourceSets.main.output,
 			'com.h2database:h2:2.1.214',

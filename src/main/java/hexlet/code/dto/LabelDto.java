@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LabelDto {
+
     @NotBlank
     @Size(min = 1)
     private String name;
+
 }

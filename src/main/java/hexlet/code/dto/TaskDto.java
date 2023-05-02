@@ -13,12 +13,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskDto {
+
     @NotBlank
     @Size(min = 1)
     private String name;
+
     private String description;
+
     @NotNull
     private Long taskStatusId;
+
     private Long executorId;
+
     private List<Long> labelIds;
+
 }

@@ -26,16 +26,21 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank
     private String firstName;
+
     @NotBlank
     private String lastName;
+
     @Column(unique = true)
     @NotBlank
     private String email;
+
     @NotBlank
     @JsonIgnore
     private String password;
+
     @CreationTimestamp
     @Temporal(TIMESTAMP)
     private Date createdAt;

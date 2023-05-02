@@ -87,4 +87,13 @@
     <changeSet author="6londo9 (generated)" id="1682782614957-14">
         <addForeignKeyConstraint baseColumnNames="status_id" baseTableName="tasks" constraintName="FKhp48vnj340wm1stg2kux5dqcx" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="statuses" validate="true"/>
     </changeSet>
+    <changeSet author="6londo9 (generated)" id="1683053999174-1">
+        <dropForeignKeyConstraint baseTableName="TASK_LABEL" constraintName="FK45J1MSVAECLA2BATB854MV44O"/>
+    </changeSet>
+    <changeSet author="6londo9 (generated)" id="1683053999174-2">
+        <dropForeignKeyConstraint baseTableName="TASK_LABEL" constraintName="FKDCNG3QPMQCO6U3OFI7I939BNX"/>
+    </changeSet>
+    <changeSet author="6londo9 (generated)" id="1683053999174-3">
+        <dropTable tableName="TASK_LABEL"/>
+    </changeSet>
 </databaseChangeLog>

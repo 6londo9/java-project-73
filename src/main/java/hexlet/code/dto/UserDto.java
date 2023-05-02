@@ -15,16 +15,21 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
+
     @NotBlank
     @Size(min = 1)
     private String firstName;
+
     @NotBlank
     @Size(min = 1)
     private String lastName;
+
     @NotBlank
     @Email
     private String email;
+
     @NotBlank
     @Size(min = 3)
     private String password;
+
 }

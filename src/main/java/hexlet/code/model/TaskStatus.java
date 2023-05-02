@@ -21,13 +21,17 @@ import static jakarta.persistence.TemporalType.TIMESTAMP;
 @Entity
 @Table(name = "statuses")
 public class TaskStatus {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank
     @Size(min = 1)
     private String name;
+
     @CreationTimestamp
     @Temporal(TIMESTAMP)
     private Date createdAt;
+
 }

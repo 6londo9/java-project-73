@@ -24,16 +24,21 @@ import static jakarta.persistence.TemporalType.TIMESTAMP;
 @Setter
 @Table(name = "labels")
 public class Label {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank
     @Size(min = 1)
     private String name;
+
     @JsonIgnore
     @ManyToMany
     private Set<Task> tasks;
+
     @CreationTimestamp
     @Temporal(TIMESTAMP)
     private Date createdAt;
+
 }

@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,10 +25,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> getTasks(Predicate predicate) {
-        Iterable<Task> tasks = taskRepository.findAll(predicate);
-        List<Task> tasksList = new ArrayList<>();
-        tasks.forEach(tasksList::add);
-        return tasksList;
+        return (List<Task>) taskRepository.findAll(predicate);
     }
 
     @Override
@@ -58,8 +54,10 @@ public class TaskServiceImpl implements TaskService {
 
     private Task merge(Task task, TaskDto dto) {
         User author = userService.getCurrentUser();
-        User executor = userService.getUserById(dto.getExecutorId());
-        TaskStatus taskStatus = taskStatusService.getTaskStatus(dto.getTaskStatusId());
+        User executor = dto.getExecutorId() != null
+                                ? userService.getUserById(dto.getExecutorId()) : null;
+        TaskStatus taskStatus = dto.getTaskStatusId() != null
+                                ? taskStatusService.getTaskStatus(dto.getTaskStatusId()) : null;
 
         task.setName(dto.getName());
         task.setDescription(dto.getDescription());

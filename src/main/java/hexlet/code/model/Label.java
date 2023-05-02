@@ -8,8 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -34,11 +32,6 @@ public class Label {
     private String name;
     @JsonIgnore
     @ManyToMany
-    @JoinTable(
-            name = "task_label",
-            joinColumns = @JoinColumn(name = "label_id"),
-            inverseJoinColumns = @JoinColumn(name = "task_id")
-    )
     private Set<Task> tasks;
     @CreationTimestamp
     @Temporal(TIMESTAMP)

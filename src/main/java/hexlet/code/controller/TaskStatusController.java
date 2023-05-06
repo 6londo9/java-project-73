@@ -2,7 +2,6 @@ package hexlet.code.controller;
 
 import hexlet.code.dto.TaskStatusDto;
 import hexlet.code.model.TaskStatus;
-import hexlet.code.repository.UserRepository;
 import hexlet.code.service.TaskStatusService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -26,7 +25,6 @@ import static hexlet.code.controller.UserController.ID;
 public class TaskStatusController {
     public static final String TASK_STATUS_CONTROLLER_PATH = "/statuses";
     private final TaskStatusService taskService;
-    private final UserRepository userRepository;
 
     @GetMapping
     public List<TaskStatus> getAllTaskStatuses() {

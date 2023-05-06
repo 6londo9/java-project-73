@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -25,6 +25,6 @@ public class TaskDto {
 
     private Long executorId;
 
-    private List<Long> labelIds;
+    private Set<Long> labelIds;
 
 }

@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 
 import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
@@ -87,7 +87,7 @@ public class TestUtils {
                 "Test task endpoints",
                 taskStatus.getId(),
                 user.getId(),
-                new ArrayList<>());
+                new HashSet<>());
 
         final var request = post(TASK_CONTROLLER_PATH)
                 .content(asJson(dto))

@@ -21,7 +21,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import static hexlet.code.utils.TestUtils.asJson;
 import static hexlet.code.utils.TestUtils.fromJson;
@@ -120,7 +120,7 @@ public class TaskControllerIT {
         final var user = userRepository.findAll().get(0);
         final var status = taskStatusRepository.findAll().get(0);
 
-        TaskDto task = new TaskDto("New task", "Create new task", status.getId(), user.getId(), new ArrayList<>());
+        TaskDto task = new TaskDto("New task", "Create new task", status.getId(), user.getId(), new HashSet<>());
         final var response = utils.perform(
                 post(TASK_CONTROLLER_PATH)
                         .content(asJson(task))
@@ -151,7 +151,7 @@ public class TaskControllerIT {
         TaskStatus taskStatus = taskStatusRepository.findByName(taskStatusDto.getName()).get();
 
         Task currentTask = taskRepository.findAll().get(0);
-        TaskDto dto = new TaskDto("New name", "New description", taskStatus.getId(), user.getId(), new ArrayList<>());
+        TaskDto dto = new TaskDto("New name", "New description", taskStatus.getId(), user.getId(), new HashSet<>());
 
         final var response = utils.perform(
                 put(TASK_CONTROLLER_PATH + ID, currentTask.getId())

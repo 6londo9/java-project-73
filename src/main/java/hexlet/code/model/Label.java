@@ -1,27 +1,26 @@
 package hexlet.code.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Temporal;
-import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
-import java.util.Set;
 
 import static jakarta.persistence.TemporalType.TIMESTAMP;
 
 @Entity
 @Getter
 @Setter
+@ToString
 @Table(name = "labels")
 public class Label {
 
@@ -32,10 +31,6 @@ public class Label {
     @NotBlank
     @Size(min = 1)
     private String name;
-
-    @JsonIgnore
-    @ManyToMany
-    private Set<Task> tasks;
 
     @CreationTimestamp
     @Temporal(TIMESTAMP)

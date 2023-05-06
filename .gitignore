@@ -40,4 +40,4 @@ out/
 ### MacOS File ###
 .DS_Store
 
-node
+node/

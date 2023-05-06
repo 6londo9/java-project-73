@@ -10,7 +10,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
@@ -20,7 +19,6 @@ import static jakarta.persistence.TemporalType.TIMESTAMP;
 @Entity
 @Getter
 @Setter
-@ToString
 @Table(name = "labels")
 public class Label {
 

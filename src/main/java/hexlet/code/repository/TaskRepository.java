@@ -16,7 +16,6 @@ public interface TaskRepository extends JpaRepository<Task, Long>,
     default void customize(QuerydslBindings bindings, QTask task) {
         bindings.bind(task.taskStatus.id).first(SimpleExpression::eq);
         bindings.bind(task.executor.id).first(SimpleExpression::eq);
-        bindings.bind(task.labels.any()).first(SimpleExpression::in);
         bindings.bind(task.labels).first((path, value) -> path.any().in(value));
         bindings.bind(task.author.id).first(SimpleExpression::eq);
     }

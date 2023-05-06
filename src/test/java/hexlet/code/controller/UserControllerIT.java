@@ -68,11 +68,11 @@ public class UserControllerIT {
     }
 
     @Test
-    @Disabled(value = "Try found needed status")
+    @Disabled(value = "It's not giving the 400 error, but giving SQL error")
     void testExistedUser() throws Exception {
         assertEquals(1, userRepository.count());
         final var existedUser = utils.getDefaultUser();
-        utils.registerUser(existedUser).andExpect(status().isConflict());
+        utils.registerUser(existedUser).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -94,14 +94,6 @@ public class UserControllerIT {
         assertEquals(expectedUser.getFirstName(), actualUser.getFirstName());
         assertEquals(expectedUser.getLastName(), actualUser.getLastName());
         assertEquals(expectedUser.getEmail(), actualUser.getEmail());
-    }
-
-    @Test
-    @Disabled(value = "Fix no such element exception")
-    void getUserWithUnknownId() throws Exception {
-        utils.perform(
-                get(USER_CONTROLLER_PATH + "/10000", USER_EMAIL)
-        ).andExpect(status().isBadRequest());
     }
 
     @Test

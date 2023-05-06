@@ -14,7 +14,6 @@ import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -80,7 +79,6 @@ public class TaskControllerIT {
     }
 
     @Test
-    @Disabled
     void testGetFilteredTasks() throws Exception {
         assertEquals(1, taskRepository.count());
 
@@ -91,7 +89,7 @@ public class TaskControllerIT {
         taskRepository.save(task1);
         taskRepository.save(task2);
 
-        final var response = utils.perform(get(TASK_CONTROLLER_PATH + "?labels=2"))
+        final var response = utils.perform(get(TASK_CONTROLLER_PATH + "?statuses=" + status.getId()))
         .andExpect(status().isOk()).andReturn().getResponse();
         assertThat(response.getContentAsString()).contains("Test");
         assertThat(response.getContentAsString()).contains("Work");

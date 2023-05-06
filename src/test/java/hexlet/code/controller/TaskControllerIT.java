@@ -80,7 +80,7 @@ public class TaskControllerIT {
     }
 
     @Test
-//    @Disabled
+    @Disabled
     void testGetFilteredTasks() throws Exception {
         assertEquals(1, taskRepository.count());
 

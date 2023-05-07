@@ -9,9 +9,9 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: ${MYSQLUSER}
-    password: ${MYSQLPASSWORD}
-    url: ${MYSQL_URL}
+    username: ${PGUSER}
+    password: ${PGPASSWORD}
+    url: ${DATABASE_URL}
 
   jpa:
     show-sql: true

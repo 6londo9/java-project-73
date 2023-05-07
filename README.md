@@ -7,7 +7,7 @@
 ---
 This is my fifth study project that contains mine backend logic with default frontend part.
 
-It is a web app, where users can register, write comments and etc...
+It is a web app, where users can write tasks with labels and statuses for each other like github, jira and etc.
 
 ---
 To make app work, start it by

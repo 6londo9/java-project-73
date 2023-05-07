@@ -68,7 +68,8 @@ public class TaskStatusControllerIT {
         taskStatusRepository.save(taskStatus2);
         assertEquals(3, taskStatusRepository.count());
 
-        final var response = utils.getTaskStatuses().andExpect(status().isOk()).andReturn().getResponse();
+        final var response = utils.perform(get(TASK_STATUS_CONTROLLER_PATH), USER_EMAIL)
+                .andExpect(status().isOk()).andReturn().getResponse();
         assertThat(response.getContentAsString()).contains("Testing");
         assertThat(response.getContentAsString()).contains("Making");
         assertThat(response.getContentAsString()).contains("Baking");
@@ -77,7 +78,9 @@ public class TaskStatusControllerIT {
     @Test
     void getTaskById() throws Exception {
         TaskStatus expectedTask = taskStatusRepository.findAll().get(0);
-        final var response = utils.perform(get(TASK_STATUS_CONTROLLER_PATH + ID, expectedTask.getId()))
+        final var response = utils.perform(
+                    get(TASK_STATUS_CONTROLLER_PATH + ID, expectedTask.getId()), USER_EMAIL
+                )
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();

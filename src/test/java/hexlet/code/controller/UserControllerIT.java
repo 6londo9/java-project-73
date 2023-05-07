@@ -9,7 +9,6 @@ import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -68,11 +67,10 @@ public class UserControllerIT {
     }
 
     @Test
-    @Disabled(value = "It's not giving the 400 error, but giving SQL error")
     void testExistedUser() throws Exception {
         assertEquals(1, userRepository.count());
         final var existedUser = utils.getDefaultUser();
-        utils.registerUser(existedUser).andExpect(status().isBadRequest());
+        utils.registerUser(existedUser).andExpect(status().isUnprocessableEntity());
     }
 
     @Test

@@ -15,3 +15,5 @@ To make app work, start it by
 make start
 ```
 It will be available on the path: http://localhost:5000
+
+Swagger documentation is available on the path: http://localhost:5000/swagger-ui.html

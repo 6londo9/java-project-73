@@ -22,6 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashSet;
 
+import static hexlet.code.utils.TestUtils.USER_EMAIL;
 import static hexlet.code.utils.TestUtils.asJson;
 import static hexlet.code.utils.TestUtils.fromJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,7 +72,9 @@ public class TaskControllerIT {
         taskRepository.save(task1);
         taskRepository.save(task2);
 
-        final var response = utils.getTasks().andExpect(status().isOk()).andReturn().getResponse();
+        final var response = utils.perform(
+                get(TASK_CONTROLLER_PATH), USER_EMAIL
+        ).andExpect(status().isOk()).andReturn().getResponse();
         assertEquals(3, taskRepository.count());
         assertThat(response.getContentAsString()).contains("Test");
         assertThat(response.getContentAsString()).contains("Work");
@@ -89,7 +92,7 @@ public class TaskControllerIT {
         taskRepository.save(task1);
         taskRepository.save(task2);
 
-        final var response = utils.perform(get(TASK_CONTROLLER_PATH + "?statuses=" + status.getId()))
+        final var response = utils.perform(get(TASK_CONTROLLER_PATH + "?statuses=" + status.getId()), USER_EMAIL)
         .andExpect(status().isOk()).andReturn().getResponse();
         assertThat(response.getContentAsString()).contains("Test");
         assertThat(response.getContentAsString()).contains("Work");
@@ -99,7 +102,7 @@ public class TaskControllerIT {
     void testGetTaskById() throws Exception {
         final var expectedTask = taskRepository.findAll().get(0);
         final var response = utils.perform(
-                get(TASK_CONTROLLER_PATH + ID, expectedTask.getId())
+                get(TASK_CONTROLLER_PATH + ID, expectedTask.getId()), USER_EMAIL
         ).andExpect(status().isOk())
                 .andReturn()
                 .getResponse();

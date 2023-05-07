@@ -1,6 +1,8 @@
 package hexlet.code.exception;
 
-public class TaskStatusException extends RuntimeException {
+import java.util.NoSuchElementException;
+
+public class TaskStatusException extends NoSuchElementException {
     public TaskStatusException(String message) {
         super(message);
     }

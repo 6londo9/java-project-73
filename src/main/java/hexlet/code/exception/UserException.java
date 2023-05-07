@@ -1,6 +1,8 @@
 package hexlet.code.exception;
 
-public class UserException extends RuntimeException {
+import java.util.NoSuchElementException;
+
+public class UserException extends NoSuchElementException {
     public UserException(String message) {
         super(message);
     }

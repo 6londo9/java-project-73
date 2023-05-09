@@ -17,7 +17,7 @@ public class WelcomeController {
     @Value("${spring.profiles.active:}")
     private String activeProfile;
 
-    private Rollbar rollbar = Rollbar.init(
+    private final Rollbar rollbar = Rollbar.init(
             withAccessToken(rollbarToken)
                     .environment(activeProfile)
                     .build()

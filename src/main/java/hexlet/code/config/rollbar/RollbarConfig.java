@@ -17,7 +17,7 @@ import java.util.Objects;
 })
 public class RollbarConfig {
 
-    @Value("${ROLLBAR_TOKEN:}")
+    @Value("${ROLLBAR_TOKEN}")
     private String rollbarToken;
     @Value("${spring.profiles.active:}")
     private String activeProfile;

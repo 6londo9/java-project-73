@@ -11,14 +11,11 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      - name: Print Rollbar token
-        env:
-          ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
-        run: echo $ROLLBAR_TOKEN
-
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
         with:
           arguments: build
 
@@ -26,8 +23,6 @@ jobs:
         uses: paambaati/codeclimate-action@v3.1.1
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
           JACOCO_SOURCE_PATH: src/main/java
         with:
           coverageCommand: make report

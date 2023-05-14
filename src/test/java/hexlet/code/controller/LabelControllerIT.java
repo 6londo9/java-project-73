@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import static hexlet.code.utils.TestUtils.BASE_URL;
 import static hexlet.code.utils.TestUtils.asJson;
 import static hexlet.code.utils.TestUtils.fromJson;
 import static hexlet.code.utils.TestUtils.USER_EMAIL;
@@ -62,7 +63,7 @@ public class LabelControllerIT {
         utils.createLabel(new LabelDto("Tests"));
 
         final var response = utils.perform(
-                get(LABEL_CONTROLLER_PATH),
+                get(BASE_URL + LABEL_CONTROLLER_PATH),
                 USER_EMAIL
         )
                 .andExpect(status().isOk())
@@ -78,7 +79,7 @@ public class LabelControllerIT {
     void testGetLabelById() throws Exception {
         final var expectedLabel = labelRepository.findAll().get(0);
         final var response = utils.perform(
-                get(LABEL_CONTROLLER_PATH + ID, expectedLabel.getId()),
+                get(BASE_URL + LABEL_CONTROLLER_PATH + ID, expectedLabel.getId()),
                 USER_EMAIL
         )
                 .andExpect(status().isOk())
@@ -96,11 +97,11 @@ public class LabelControllerIT {
     void testCreateLabel() throws Exception {
         final var labelDto = new LabelDto("Issue");
         utils.perform(
-                post(LABEL_CONTROLLER_PATH)
+                post(BASE_URL + LABEL_CONTROLLER_PATH)
                         .content(asJson(labelDto))
                         .contentType(APPLICATION_JSON),
                 USER_EMAIL
-        ).andExpect(status().isOk());
+        ).andExpect(status().isCreated());
 
         assertEquals(2, labelRepository.count());
     }
@@ -111,7 +112,7 @@ public class LabelControllerIT {
         final var dto = new LabelDto("Testing");
 
         final var response = utils.perform(
-                put(LABEL_CONTROLLER_PATH + ID, currentLabel.getId())
+                put(BASE_URL + LABEL_CONTROLLER_PATH + ID, currentLabel.getId())
                         .content(asJson(dto))
                         .contentType(APPLICATION_JSON),
                 USER_EMAIL
@@ -134,7 +135,7 @@ public class LabelControllerIT {
         final var currentLabel = labelRepository.findAll().get(0);
 
         utils.perform(
-                delete(LABEL_CONTROLLER_PATH + ID, currentLabel.getId()),
+                delete(BASE_URL + LABEL_CONTROLLER_PATH + ID, currentLabel.getId()),
                 USER_EMAIL
         ).andExpect(status().isOk());
         assertEquals(0, labelRepository.count());

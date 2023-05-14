@@ -3,7 +3,6 @@ package hexlet.code.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.config.SpringConfigForIT;
 import hexlet.code.dto.UserDto;
-import hexlet.code.exception.UserException;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.TestUtils;
@@ -14,13 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
 import static hexlet.code.config.SpringConfigForIT.TEST_PROFILE;
+import static hexlet.code.utils.TestUtils.BASE_URL;
 import static hexlet.code.utils.TestUtils.asJson;
 import static hexlet.code.utils.TestUtils.fromJson;
 import static hexlet.code.utils.TestUtils.USER_EMAIL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -28,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
 import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
@@ -38,11 +39,19 @@ import static hexlet.code.controller.UserController.ID;
 @AutoConfigureMockMvc
 @ActiveProfiles(TEST_PROFILE)
 public class UserControllerIT {
-// TODO: Make tests for negative results
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private TestUtils utils;
+
+    private final UserDto userDto = UserDto
+            .builder()
+            .email("vasya@gmail.com")
+            .firstName("Vasilii")
+            .lastName("Kubitsky")
+            .password("vasilkube")
+            .build();
+
     @BeforeEach
     public void beforeEach() throws Exception {
         utils.registerDefaultUser();
@@ -56,13 +65,7 @@ public class UserControllerIT {
     @Test
     void testCreateUser() throws Exception {
         assertEquals(1, userRepository.count());
-        final var newUser = UserDto.builder()
-                        .firstName("Sergey")
-                        .lastName("Vinokurov")
-                        .email("vinok@gmail.com")
-                        .password("password")
-                .build();
-        utils.registerUser(newUser).andExpect(status().isOk());
+        utils.registerUser(userDto).andExpect(status().isCreated());
         assertEquals(2, userRepository.count());
     }
 
@@ -79,7 +82,7 @@ public class UserControllerIT {
         final User expectedUser = userRepository.findAll().get(0);
 
         final var response = utils.perform(
-                get(USER_CONTROLLER_PATH + ID, expectedUser.getId()),
+                get(BASE_URL + USER_CONTROLLER_PATH + ID, expectedUser.getId()),
                         USER_EMAIL)
                 .andExpect(status().isOk())
                 .andReturn()
@@ -98,27 +101,20 @@ public class UserControllerIT {
     void testGetUsers() throws Exception {
         assertEquals(1, userRepository.count());
 
-        UserDto user1 = UserDto
+        utils.registerUser(userDto);
+        assertEquals(2, userRepository.count());
+
+        UserDto user2 = UserDto
                 .builder()
                 .email("eugen@gmail.com")
                 .firstName("Evgeny")
                 .lastName("Novatsky")
                 .password("enovatsky")
                 .build();
-        utils.registerUser(user1);
-        assertEquals(2, userRepository.count());
-
-        UserDto user2 = UserDto
-                .builder()
-                .email("vasya@gmail.com")
-                .firstName("Vasilii")
-                .lastName("Kubitsky")
-                .password("vasilkube")
-                .build();
         utils.registerUser(user2);
         assertEquals(3, userRepository.count());
 
-        final var response = utils.perform(get(USER_CONTROLLER_PATH))
+        final var response = utils.perform(get(BASE_URL + USER_CONTROLLER_PATH))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -135,17 +131,9 @@ public class UserControllerIT {
 
     @Test
     void testUpdateUser() throws Exception {
-        final var currentUserDto = UserDto
-                .builder()
-                .email("vasya@gmail.com")
-                .firstName("Vasilii")
-                .lastName("Kubitsky")
-                .password("vasilkube")
-                .build();
-        utils.registerUser(currentUserDto);
+        utils.registerUser(userDto);
 
-        User currentUser = userRepository.findByEmail(currentUserDto.getEmail())
-                .orElseThrow(() -> new UserException("User with email: " + currentUserDto.getEmail() + " not found."));
+        User currentUser = userRepository.findByEmail(userDto.getEmail()).get();
 
         final var newUserDto = UserDto
                 .builder()
@@ -156,15 +144,40 @@ public class UserControllerIT {
                 .build();
 
         utils.perform(
-                put(USER_CONTROLLER_PATH + ID, currentUser.getId())
+                put(BASE_URL + USER_CONTROLLER_PATH + ID, currentUser.getId())
                 .content(asJson(newUserDto))
-                .contentType(MediaType.APPLICATION_JSON),
+                .contentType(APPLICATION_JSON),
                 currentUser.getEmail()
         ).andExpect(status().isOk());
 
         assertTrue(userRepository.existsById(currentUser.getId()));
         assertNotNull(userRepository.findByEmail("new@gmail.com"));
         assertNull(userRepository.findByEmail("vasya@gmail.com").orElse(null));
+    }
+    @Test
+    void testUpdateUserWithoutRights() throws Exception {
+        utils.registerUser(userDto);
+        User existingUser = userRepository.findByEmail(USER_EMAIL).get();
+
+        final var newUserData = UserDto
+                .builder()
+                .email("newemail@gmail.com")
+                .firstName("Newfname")
+                .lastName("Newlname")
+                .password("newpassword")
+                .build();
+
+        utils.perform(
+                put(BASE_URL + USER_CONTROLLER_PATH + ID, existingUser.getId())
+                        .content(asJson(newUserData))
+                        .contentType(APPLICATION_JSON),
+                userDto.getEmail()
+        ).andExpect(status().isForbidden());
+
+        final var expectedUser = userRepository.findByEmail(USER_EMAIL);
+        assertNotEquals(userDto.getEmail(), expectedUser.get().getEmail());
+        assertNotEquals(userDto.getFirstName(), expectedUser.get().getFirstName());
+        assertNotEquals(userDto.getLastName(), expectedUser.get().getLastName());
     }
 
     @Test
@@ -173,23 +186,16 @@ public class UserControllerIT {
 
         final var user = userRepository.findAll().get(0);
 
-        utils.perform(delete(USER_CONTROLLER_PATH + ID, user.getId()), user.getEmail())
+        utils.perform(delete(BASE_URL + USER_CONTROLLER_PATH + ID, user.getId()), user.getEmail())
                 .andExpect(status().isOk());
         assertEquals(0, userRepository.count());
     }
 
     @Test
     void testDeleteWithoutRights() throws Exception {
-        final var newUser = UserDto.builder()
-                        .firstName("Max")
-                        .lastName("Maximov")
-                        .email("maxmax@gmail.com")
-                        .password("max2000")
-                        .build();
-        utils.registerUser(newUser);
-        final var user = userRepository.findByEmail(newUser.getEmail())
-                        .orElseThrow(() -> new UserException("User with email: " + newUser.getEmail() + " not found."));
-        utils.perform(delete(USER_CONTROLLER_PATH + ID, user.getId()), USER_EMAIL)
+        utils.registerUser(userDto);
+        final var user = userRepository.findByEmail(userDto.getEmail()).get();
+        utils.perform(delete(BASE_URL + USER_CONTROLLER_PATH + ID, user.getId()), USER_EMAIL)
                 .andExpect(status().isForbidden());
     }
 }

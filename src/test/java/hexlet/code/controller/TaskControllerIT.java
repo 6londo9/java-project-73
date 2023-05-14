@@ -6,8 +6,6 @@ import hexlet.code.dto.TaskDto;
 import hexlet.code.dto.TaskStatusDto;
 import hexlet.code.dto.UserDto;
 import hexlet.code.model.Task;
-import hexlet.code.model.TaskStatus;
-import hexlet.code.model.User;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
@@ -22,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashSet;
 
+import static hexlet.code.utils.TestUtils.BASE_URL;
 import static hexlet.code.utils.TestUtils.USER_EMAIL;
 import static hexlet.code.utils.TestUtils.asJson;
 import static hexlet.code.utils.TestUtils.fromJson;
@@ -65,15 +64,15 @@ public class TaskControllerIT {
     void testGetAllTasks() throws Exception {
         assertEquals(1, taskRepository.count());
 
-        User user = userRepository.findAll().get(0);
-        TaskStatus status = taskStatusRepository.findAll().get(0);
-        Task task1 = utils.task("Test", "Testing endpoint", status, user);
-        Task task2 = utils.task("Work", "Almost working", status, user);
+        final var user = userRepository.findAll().get(0);
+        final var status = taskStatusRepository.findAll().get(0);
+        final var task1 = utils.task("Test", "Testing endpoint", status, user);
+        final var task2 = utils.task("Work", "Almost working", status, user);
         taskRepository.save(task1);
         taskRepository.save(task2);
 
         final var response = utils.perform(
-                get(TASK_CONTROLLER_PATH), USER_EMAIL
+                get(BASE_URL + TASK_CONTROLLER_PATH), USER_EMAIL
         ).andExpect(status().isOk()).andReturn().getResponse();
         assertEquals(3, taskRepository.count());
         assertThat(response.getContentAsString()).contains("Test");
@@ -85,14 +84,16 @@ public class TaskControllerIT {
     void testGetFilteredTasks() throws Exception {
         assertEquals(1, taskRepository.count());
 
-        User user = userRepository.findAll().get(0);
-        TaskStatus status = taskStatusRepository.findAll().get(0);
-        Task task1 = utils.task("Test", "Testing endpoint", status, user);
-        Task task2 = utils.task("Work", "Almost working", status, user);
+        final var user = userRepository.findAll().get(0);
+        final var status = taskStatusRepository.findAll().get(0);
+        final var task1 = utils.task("Test", "Testing endpoint", status, user);
+        final var task2 = utils.task("Work", "Almost working", status, user);
         taskRepository.save(task1);
         taskRepository.save(task2);
 
-        final var response = utils.perform(get(TASK_CONTROLLER_PATH + "?statuses=" + status.getId()), USER_EMAIL)
+        final var response = utils.perform(get(
+                BASE_URL + TASK_CONTROLLER_PATH + "?statuses=" + status.getId()), USER_EMAIL
+                )
         .andExpect(status().isOk()).andReturn().getResponse();
         assertThat(response.getContentAsString()).contains("Test");
         assertThat(response.getContentAsString()).contains("Work");
@@ -102,7 +103,7 @@ public class TaskControllerIT {
     void testGetTaskById() throws Exception {
         final var expectedTask = taskRepository.findAll().get(0);
         final var response = utils.perform(
-                get(TASK_CONTROLLER_PATH + ID, expectedTask.getId()), USER_EMAIL
+                get(BASE_URL + TASK_CONTROLLER_PATH + ID, expectedTask.getId()), USER_EMAIL
         ).andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -121,13 +122,13 @@ public class TaskControllerIT {
         final var user = userRepository.findAll().get(0);
         final var status = taskStatusRepository.findAll().get(0);
 
-        TaskDto task = new TaskDto("New task", "Create new task", status.getId(), user.getId(), new HashSet<>());
+        final var task = new TaskDto("New task", "Create new task", status.getId(), user.getId(), new HashSet<>());
         final var response = utils.perform(
-                post(TASK_CONTROLLER_PATH)
+                post(BASE_URL + TASK_CONTROLLER_PATH)
                         .content(asJson(task))
                         .contentType(APPLICATION_JSON),
                 user.getEmail()
-        ).andExpect(status().isOk())
+        ).andExpect(status().isCreated())
                 .andReturn()
                 .getResponse();
 
@@ -137,25 +138,25 @@ public class TaskControllerIT {
 
     @Test
     void testUpdateTask() throws Exception {
-        User author = userRepository.findAll().get(0);
-        UserDto userDto = UserDto.builder()
+        final var author = userRepository.findAll().get(0);
+        final var userDto = UserDto.builder()
                 .firstName("Ignat")
                 .lastName("Vasilyev")
                 .email("evas@gmail.com")
                 .password("password")
                 .build();
         utils.registerUser(userDto);
-        User user = userRepository.findByEmail(userDto.getEmail()).get();
+        final var user = userRepository.findByEmail(userDto.getEmail()).get();
 
-        TaskStatusDto taskStatusDto = new TaskStatusDto("Working");
+        final var taskStatusDto = new TaskStatusDto("Working");
         utils.createTaskStatus(taskStatusDto);
-        TaskStatus taskStatus = taskStatusRepository.findByName(taskStatusDto.getName()).get();
+        final var taskStatus = taskStatusRepository.findByName(taskStatusDto.getName()).get();
 
-        Task currentTask = taskRepository.findAll().get(0);
-        TaskDto dto = new TaskDto("New name", "New description", taskStatus.getId(), user.getId(), new HashSet<>());
+        final var currentTask = taskRepository.findAll().get(0);
+        final var dto = new TaskDto("New name", "New description", taskStatus.getId(), user.getId(), new HashSet<>());
 
         final var response = utils.perform(
-                put(TASK_CONTROLLER_PATH + ID, currentTask.getId())
+                put(BASE_URL + TASK_CONTROLLER_PATH + ID, currentTask.getId())
                         .content(asJson(dto))
                         .contentType(APPLICATION_JSON),
                 author.getEmail()
@@ -176,14 +177,32 @@ public class TaskControllerIT {
 
     @Test
     void testDeleteTask() throws Exception {
-        User author = userRepository.findAll().get(0);
-        Task task = taskRepository.findAll().get(0);
+        final var author = userRepository.findAll().get(0);
+        final var task = taskRepository.findAll().get(0);
         utils.perform(
-                delete(TASK_CONTROLLER_PATH + ID, task.getId()),
+                delete(BASE_URL + TASK_CONTROLLER_PATH + ID, task.getId()),
                 author.getEmail()
         ).andExpect(status().isOk());
 
         assertThat(taskRepository.existsById(task.getId())).isFalse();
         assertEquals(0, taskRepository.count());
+    }
+
+    @Test
+    void testDeleteTaskUnauthorized() throws Exception {
+        final var newUserDto = UserDto
+                .builder()
+                .email("newuser@gmail.com")
+                .firstName("firstname")
+                .lastName("lastname")
+                .password("password")
+                .build();
+        utils.registerUser(newUserDto);
+
+        final var task = taskRepository.findAll().get(0);
+        utils.perform(
+                delete(BASE_URL + TASK_CONTROLLER_PATH + ID, task.getId()),
+                newUserDto.getEmail()
+        ).andExpect(status().isForbidden());
     }
 }

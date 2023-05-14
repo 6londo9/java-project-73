@@ -48,6 +48,8 @@ public class TestUtils {
     @Autowired
     private JWTHelper jwtHelper;
 
+    public static final String BASE_URL = "/api";
+
     public void tearDown() {
         taskRepository.deleteAll();
         userRepository.deleteAll();
@@ -70,7 +72,7 @@ public class TestUtils {
         return registerUser(testUserDto);
     }
     public ResultActions registerUser(final UserDto userDto) throws Exception {
-        final var request = post(USER_CONTROLLER_PATH)
+        final var request = post(BASE_URL + USER_CONTROLLER_PATH)
                 .content(asJson(userDto))
                 .contentType(APPLICATION_JSON);
         return perform(request);
@@ -89,14 +91,14 @@ public class TestUtils {
                 user.getId(),
                 new HashSet<>());
 
-        final var request = post(TASK_CONTROLLER_PATH)
+        final var request = post(BASE_URL + TASK_CONTROLLER_PATH)
                 .content(asJson(dto))
                 .contentType(APPLICATION_JSON);
         return perform(request, USER_EMAIL);
     }
 
     public ResultActions getTasks() throws Exception {
-        final var request = get(TASK_CONTROLLER_PATH);
+        final var request = get(BASE_URL + TASK_CONTROLLER_PATH);
         return perform(request);
     }
 
@@ -118,19 +120,19 @@ public class TestUtils {
 
     public ResultActions createDefaultTaskStatus() throws Exception {
         registerDefaultUser();
-        final var request = post(TASK_STATUS_CONTROLLER_PATH)
+        final var request = post(BASE_URL + TASK_STATUS_CONTROLLER_PATH)
                 .content(asJson(taskStatusDto))
                 .contentType(APPLICATION_JSON);
         return perform(request, USER_EMAIL);
     }
 
     public ResultActions getTaskStatuses() throws Exception {
-        final var request = get(TASK_STATUS_CONTROLLER_PATH);
+        final var request = get(BASE_URL + TASK_STATUS_CONTROLLER_PATH);
         return perform(request);
     }
 
     public ResultActions createTaskStatus(TaskStatusDto dto) throws Exception {
-        final var request = post(TASK_STATUS_CONTROLLER_PATH)
+        final var request = post(BASE_URL + TASK_STATUS_CONTROLLER_PATH)
                 .content(asJson(dto))
                 .contentType(APPLICATION_JSON);
         return perform(request, USER_EMAIL);
@@ -142,13 +144,13 @@ public class TestUtils {
     private final LabelDto labelDto = new LabelDto("Bug");
     public ResultActions createDefaultLabel() throws Exception {
         registerDefaultUser();
-        final var request = post(LABEL_CONTROLLER_PATH)
+        final var request = post(BASE_URL + LABEL_CONTROLLER_PATH)
                 .content(asJson(labelDto))
                 .contentType(APPLICATION_JSON);
         return perform(request, USER_EMAIL);
     }
     public ResultActions createLabel(LabelDto dto) throws Exception {
-        final var request = post(LABEL_CONTROLLER_PATH)
+        final var request = post(BASE_URL + LABEL_CONTROLLER_PATH)
                 .content(asJson(dto))
                 .contentType(APPLICATION_JSON);
         return perform(request, USER_EMAIL);

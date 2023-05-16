@@ -13,9 +13,6 @@ jobs:
           distribution: 'temurin'
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
-        env:
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
         with:
           arguments: build
 

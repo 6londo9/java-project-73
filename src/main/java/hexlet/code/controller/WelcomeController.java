@@ -12,7 +12,7 @@ import static com.rollbar.spring.webmvc.RollbarSpringConfigBuilder.withAccessTok
 @RestController
 public class WelcomeController {
 
-    @Value("${ROLLBAR_TOKEN}")
+    @Value("${rollbar.token}")
     private String rollbarToken;
     @Value("${spring.profiles.active:}")
     private String activeProfile;

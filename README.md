@@ -7,10 +7,12 @@
 ---
 This is my fifth study project that contains mine backend logic with default frontend part.
 
-It is a web app, where users can write tasks with labels and statuses for each other like github, jira and etc.
+It is a web app, where users can write tasks with labels and statuses for each other like Github, Jira and etc.
+
+The fully working deployed app you can check out [here](https://java-project-73-production-83e0.up.railway.app/).
 
 ---
-To make app work, start it by
+To make app work, at first, you need to define 'JWT_SECRET' and 'ROLLBAR_TOKEN' environment variables, then start it by
 ```
 make start
 ```

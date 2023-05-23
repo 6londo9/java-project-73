@@ -60,8 +60,9 @@ public class TestUtils {
     public static final String USER_EMAIL = "ivanov@email.ru";
 
     /**
-     *  User utils
+     *  User utils.
      */
+
     private final UserDto testUserDto = new UserDto(
             "Ivan", "Ivanov", "ivanov@email.ru", "ivanov"
     );
@@ -79,8 +80,9 @@ public class TestUtils {
     }
 
     /**
-     *  Task utils
+     *  Task utils.
      */
+
     public ResultActions createDefaultTask() throws Exception {
         createDefaultTaskStatus();
         User user = userRepository.findAll().get(0);
@@ -112,8 +114,9 @@ public class TestUtils {
     }
 
     /**
-     *  Task status utils
+     *  Task status utils.
      */
+
     private final TaskStatusDto taskStatusDto = new TaskStatusDto(
             "Testing"
     );
@@ -139,8 +142,9 @@ public class TestUtils {
     }
 
     /**
-     *  Label utils
+     *  Label utils.
      */
+
     private final LabelDto labelDto = new LabelDto("Bug");
     public ResultActions createDefaultLabel() throws Exception {
         registerDefaultUser();
@@ -157,8 +161,9 @@ public class TestUtils {
     }
 
     /**
-     *  Request utils
+     *  Request utils.
      */
+
     public ResultActions perform(final MockHttpServletRequestBuilder request, final String byUser) throws Exception {
         final String token = jwtHelper.expiring(Map.of("username", byUser));
         request.header(AUTHORIZATION, token);

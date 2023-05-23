@@ -12,7 +12,7 @@ It is a web app, where users can write tasks with labels and statuses for each o
 The fully working deployed app you can check out [here](https://java-project-73-production-83e0.up.railway.app/).
 
 ---
-To make app work, at first, you need to define 'JWT_SECRET' and 'ROLLBAR_TOKEN' environment variables, then start it by
+To make app work, at first, you need to change 'jwt.secret' and 'rollbar.token' variables in 'application.yml' to yours, then start it by
 ```
 make start
 ```
